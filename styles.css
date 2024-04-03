@@ -1,3 +1,22 @@
 body {
   background-color: #223;
 }
+
+#gameboard {
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
+  background-color: #223;
+  width: 320px;
+  gap: 10px;
+}
+
+.space {
+  height: 100px;
+  width: 100px;
+  background-color: red;
+}
+
+.space.untaken:hover {
+  background-color: pink;
+}
