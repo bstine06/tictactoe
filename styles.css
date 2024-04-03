@@ -26,3 +26,20 @@ body {
 .space.untaken:hover {
   background-color: pink;
 }
+
+#message {
+  color: white;
+  margin-top: 1em;
+}
+
+h1 {
+  color: white;
+}
+
+.player-options-label {
+  color: white;
+}
+
+.mark-input {
+  width: 1em;
+}

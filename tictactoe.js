@@ -55,8 +55,12 @@ const game = (function () {
       return -1; //invalid move
     }
     gameboard.addMark(players[turn].mark,yPos,xPos)
-    round++;
     displayController.addMark(players[turn].mark, yPos, xPos);
+    updateGameStateAfterTurn();
+  }
+
+  function updateGameStateAfterTurn() {
+    round++;
     if (checkWinner(gameboard.getBoard())) {
       turn = 2;
       displayController.displayPostgame(checkWinner(gameboard.getBoard()));
