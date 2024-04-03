@@ -60,3 +60,27 @@ const gameboard = (function () {
 
   return { addMark, getBoard, clearBoard, checkWinner }//return all exposed functions & properties
 })();
+
+const displayController = (function () {
+
+  let myMark = 'x';
+
+  const boardDisplay = document.querySelector('#gameboard');
+  const spaces = document.querySelectorAll('.space');
+
+  spaces.forEach((space) => {
+    space.addEventListener('click', (e)=> {
+      const coords = e.target.id.split("-").splice(1);
+      if (gameboard.addMark(myMark, coords[0], coords[1]) > 0) {
+        addMarkDisplay(myMark, coords[0], coords[1]);
+      };
+    })
+  });
+
+  function addMarkDisplay(mark, xPos, yPos) {
+    let targetId = `#space-${xPos}-${yPos}`;
+    const targetNode = document.querySelector(targetId);
+    targetNode.textContent = mark;
+    targetNode.classList.remove('untaken');
+  }
+})();
