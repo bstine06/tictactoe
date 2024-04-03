@@ -39,10 +39,20 @@ function createPlayer (mark, isUserControlled) {
 const game = (function () {
 
   const players = [];
-  players.push(createPlayer('x', true));
-  players.push(createPlayer('o', true));
+  
+  const addPlayer = (mark, isUserControlled) => {
+    if (players.length > 1) {
+      throw new Error('Maximum 2 players can be added');
+    }
+    const newPlayer = createPlayer(mark, isUserControlled);
+    players.push(newPlayer);
+  }
 
-  let turn = 0;
+  const startGame = () => {
+    turn = 0;
+  }
+
+  let turn = 2;
   const getTurn = () => {return turn};
 
   let round = 0;
@@ -101,7 +111,7 @@ const game = (function () {
     return null;
   }
 
-  return { addMark, checkWinner, getTurn }
+  return { addPlayer, addMark, startGame, checkWinner, getTurn }
 
 })();
 
@@ -111,6 +121,19 @@ const displayController = (function () {
 
   const boardDisplay = document.querySelector('#gameboard');
   const spaces = document.querySelectorAll('.space');
+  
+  document.getElementById("game-options-form").addEventListener("submit", function(event) {
+    event.preventDefault();
+    
+    let player0Mark = document.getElementById("mark-0").value;
+    let player1Mark = document.getElementById("mark-1").value;
+    let player0UserControl = document.getElementById("user-control-0").value;
+    let player1UserControl = document.getElementById("user-control-1").value;
+
+    game.addPlayer(player0Mark, player0UserControl);
+    game.addPlayer(player1Mark, player1UserControl);
+    game.startGame();
+  });
 
   spaces.forEach((space) => {
     space.addEventListener('click', (e)=> {
@@ -135,6 +158,6 @@ const displayController = (function () {
     console.log(mark);
   }
 
-  return { addMark, displayPostgame }
+  return { addMark, updateMessage, displayPostgame }
 
 })();

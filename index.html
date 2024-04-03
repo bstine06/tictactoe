@@ -9,21 +9,21 @@
 </head>
 <body>
   <h1>Tic-Tac-Toe</h1>
-  <form>
+  <form id="game-options-form">
     <div>
       <label for="mark-0" class="player-options-label">Player 1: </label>
       <input value="x" type="text" maxlength="1" name="mark-0" id="mark-0" class="mark-input">
-      <select name="userControl-0">
-        <option>user</option>
-        <option>computer</option>
+      <select name="user-control-0" id="user-control-0">
+        <option value="true">user</option>
+        <option value="false">computer</option>
       </select>
     </div>
     <div>
       <label for="mark-1" class="player-options-label">Player 2: </label>
       <input value="o" type="text" maxlength="1" name="mark-1" id="mark-1" class="mark-input">
-      <select name="userControl-1">
-        <option>user</option>
-        <option>computer</option>
+      <select name="user-control-1" id="user-control-1">
+        <option value="true">user</option>
+        <option value="false">computer</option>
       </select>
     </div>
     <button type="submit">Start game</button>
@@ -39,6 +39,6 @@
     <div id="space-2-1" class="space untaken"></div>
     <div id="space-2-2" class="space untaken"></div>
   </div>
-  <div id="message">Placeholder message</div>
+  <div id="message">The game is not active! Press start to play</div>
 </body>
 </html>
