@@ -1,5 +1,6 @@
 body {
   background-color: #223;
+  font-family: 'Arial Narrow Bold', sans-serif;
 }
 
 #gameboard {
@@ -14,7 +15,12 @@ body {
 .space {
   height: 100px;
   width: 100px;
+  text-align: center;
+  line-height: 90px;
   background-color: red;
+  color: lightcyan;
+  font-size: 70px;
+
 }
 
 .space.untaken:hover {

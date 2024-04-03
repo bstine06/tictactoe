@@ -8,22 +8,7 @@ const gameboard = (function () {
     [null, null, null]
   ];
 
-  const addMark = (mark, xPos, yPos) => {
-    if (xPos > 2 || xPos < 0 || yPos > 2 || yPos < 0) {
-      throw new Error('Mark coordinates must be between 0 and 2');
-    }
-    if (!(mark === 'o' || mark === 'x')) {
-      throw new Error(`Mark must be 'o' or 'x'.`);
-    }
-    if (board[yPos][xPos] !== null) {
-      return -1; //invalid move
-    }
-    board[yPos][xPos] = String(mark);
-    return 1; //valid move
-  }
-
   const getBoard = () => {
-    console.table(board);
     return board;
   }
 
@@ -33,6 +18,60 @@ const gameboard = (function () {
       [null, null, null],
       [null, null, null]
     ];
+  }
+
+  const addMark = (mark, yPos, xPos) => {
+    console.log(`adding mark ${mark} to ${yPos}, ${xPos}`)
+    board[yPos][xPos] = mark;
+  }
+
+  return { addMark, getBoard, clearBoard }//return all exposed functions & properties
+})();
+
+
+
+function createPlayer (mark, isUserControlled) {
+  return { mark, isUserControlled };
+}
+
+
+
+const game = (function () {
+
+  const players = [];
+  players.push(createPlayer('x', true));
+  players.push(createPlayer('o', true));
+
+  let turn = 0;
+  const getTurn = () => {return turn};
+
+  let round = 0;
+
+  const addMark = (yPos, xPos) => {
+    if (xPos > 2 || xPos < 0 || yPos > 2 || yPos < 0) {
+      throw new Error('Mark coordinates must be between 0 and 2');
+    }
+    if (gameboard.getBoard()[yPos][xPos] !== null) {
+      return -1; //invalid move
+    }
+    gameboard.addMark(players[turn].mark,yPos,xPos)
+    round++;
+    displayController.addMark(players[turn].mark, yPos, xPos);
+    if (checkWinner(gameboard.getBoard())) {
+      turn = 2;
+      displayController.displayPostgame(checkWinner(gameboard.getBoard()));
+      return
+    }
+    if (round > 8) {
+      turn = 2;
+      displayController.displayPostgame("tie");
+      return
+    }
+    if (turn === 0) {
+      turn = 1;
+    } else if (turn === 1) {
+      turn = 0;
+    }
   }
 
   function checkWinner(board) {
@@ -56,31 +95,42 @@ const gameboard = (function () {
 
     // No winner found
     return null;
-}
+  }
 
-  return { addMark, getBoard, clearBoard, checkWinner }//return all exposed functions & properties
+  return { addMark, checkWinner, getTurn }
+
 })();
 
-const displayController = (function () {
 
-  let myMark = 'x';
+
+const displayController = (function () {
 
   const boardDisplay = document.querySelector('#gameboard');
   const spaces = document.querySelectorAll('.space');
 
   spaces.forEach((space) => {
     space.addEventListener('click', (e)=> {
-      const coords = e.target.id.split("-").splice(1);
-      if (gameboard.addMark(myMark, coords[0], coords[1]) > 0) {
-        addMarkDisplay(myMark, coords[0], coords[1]);
-      };
+      if (game.getTurn() < 2) {
+        const coords = e.target.id.split("-").splice(1);
+        game.addMark(coords[0], coords[1]);
+      }
     })
   });
 
-  function addMarkDisplay(mark, xPos, yPos) {
-    let targetId = `#space-${xPos}-${yPos}`;
+  const addMark = (mark, yPos, xPos) => {
+    let targetId = `#space-${yPos}-${xPos}`;
     const targetNode = document.querySelector(targetId);
     targetNode.textContent = mark;
     targetNode.classList.remove('untaken');
   }
+
+  const displayPostgame = (mark) => {
+    spaces.forEach((space) => {
+      space.classList.remove('untaken')
+    });
+    console.log(mark);
+  }
+
+  return { addMark, displayPostgame }
+
 })();
