@@ -31,6 +31,8 @@ const gameboard = (function () {
 
 
 function createPlayer (mark, isUserControlled) {
+  //coerce to Boolean
+  isUserControlled = !!isUserControlled;
   return { mark, isUserControlled };
 }
 
@@ -71,22 +73,60 @@ const game = (function () {
 
   function updateGameStateAfterTurn() {
     round++;
+    //check for a winner after each turn
     if (checkWinner(gameboard.getBoard())) {
       turn = 2;
       displayController.displayPostgame(checkWinner(gameboard.getBoard()));
       return
     }
+    //check if board is full (implies a tie)
     if (round > 8) {
       turn = 2;
       displayController.displayPostgame("tie");
       return
     }
+    //swap whos turn it is
     if (turn === 0) {
       turn = 1;
     } else if (turn === 1) {
       turn = 0;
     }
+    console.log(turn);
+    console.log(players[1].isUserControlled);
+    //if it's a computer player's turn, execute a turn for them
+    if (turn === 0 && players[0].isUserControlled === false) { 
+      executeComputerPlayerTurn();
+    } else if (turn === 1 && players[1].isUserControlled === false) {
+      console.log('computer player');
+      executeComputerPlayerTurn();
+    }
+
   }
+
+  function executeComputerPlayerTurn() {
+    const randomCoords = getRandomNullIndex(gameboard.getBoard());
+    addMark(randomCoords[0], randomCoords[1]);
+  }
+
+  function getRandomNullIndex(array) {
+    // Collect indices of null values
+    const nullIndices = [];
+    for (let i = 0; i < array.length; i++) {
+        for (let j = 0; j < array[i].length; j++) {
+            if (array[i][j] === null) {
+                nullIndices.push([i, j]);
+            }
+        }
+    }
+    
+    // Randomly select one of the null indices
+    if (nullIndices.length === 0) {
+        return null; // Return null if no null values found
+    } else {
+        const randomIndex = Math.floor(Math.random() * nullIndices.length);
+        return nullIndices[randomIndex];
+    }
+}
 
   function checkWinner(board) {
     // Check rows and columns
@@ -158,6 +198,6 @@ const displayController = (function () {
     console.log(mark);
   }
 
-  return { addMark, updateMessage, displayPostgame }
+  return { addMark, displayPostgame }
 
 })();
