@@ -52,6 +52,9 @@ const game = (function () {
 
   const startGame = () => {
     turn = 0;
+    if (players[0].isUserControlled === false) {
+      executeComputerPlayerTurn();
+    }
   }
 
   let turn = 2;
@@ -105,7 +108,9 @@ const game = (function () {
 
   function executeComputerPlayerTurn() {
     const randomCoords = getRandomNullIndex(gameboard.getBoard());
-    addMark(randomCoords[0], randomCoords[1]);
+    setTimeout(() => {
+      addMark(randomCoords[0], randomCoords[1]);
+    }, 300);
   }
 
   function getRandomNullIndex(array) {
