@@ -1,4 +1,4 @@
-console.log("tic tac toe");
+
 
 const gameboard = (function () {
 
@@ -21,7 +21,6 @@ const gameboard = (function () {
   }
 
   const addMark = (mark, yPos, xPos) => {
-    console.log(`adding mark ${mark} to ${yPos}, ${xPos}`)
     board[yPos][xPos] = mark;
   }
 
@@ -98,13 +97,10 @@ const game = (function () {
     } else if (turn === 1) {
       turn = 0;
     }
-    console.log(turn);
-    console.log(players[1].isUserControlled);
     //if it's a computer player's turn, execute a turn for them
     if (turn === 0 && players[0].isUserControlled === false) { 
       executeComputerPlayerTurn();
     } else if (turn === 1 && players[1].isUserControlled === false) {
-      console.log('computer player');
       executeComputerPlayerTurn();
     }
 
@@ -171,6 +167,7 @@ const displayController = (function () {
   const boardDisplay = document.querySelector('#gameboard');
   const spaces = document.querySelectorAll('.space');
   const message = document.querySelector('#message');
+  const startButton = document.querySelector('#start-button');
   
   document.getElementById("game-options-form").addEventListener("submit", function(event) {
     event.preventDefault();
@@ -184,6 +181,7 @@ const displayController = (function () {
     game.addPlayer(player1Mark, player1UserControl);
     game.startGame();
     message.textContent = `Game is active! click on any open space to take your turn.`;
+    startButton.disabled = true;
   });
 
   spaces.forEach((space) => {
@@ -218,6 +216,7 @@ const displayController = (function () {
     } else {
       message.textContent = `${mark} is the winner!`;
     }
+    startButton.disabled = false;
   }
 
   return { addMark, displayPostgame, clearBoard }
