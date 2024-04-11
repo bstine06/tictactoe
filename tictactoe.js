@@ -40,7 +40,8 @@ function createPlayer (mark, isUserControlled) {
 
 const game = (function () {
 
-  const players = [];
+  let players = [];
+  let round = 0;
   
   const addPlayer = (mark, isUserControlled) => {
     if (players.length > 1) {
@@ -51,7 +52,10 @@ const game = (function () {
   }
 
   const startGame = () => {
+    round = 0;
     turn = 0;
+    displayController.clearBoard();
+    gameboard.clearBoard();
     if (players[0].isUserControlled === false) {
       executeComputerPlayerTurn();
     }
@@ -59,8 +63,6 @@ const game = (function () {
 
   let turn = 2;
   const getTurn = () => {return turn};
-
-  let round = 0;
 
   const addMark = (yPos, xPos) => {
     if (xPos > 2 || xPos < 0 || yPos > 2 || yPos < 0) {
@@ -80,12 +82,14 @@ const game = (function () {
     if (checkWinner(gameboard.getBoard())) {
       turn = 2;
       displayController.displayPostgame(checkWinner(gameboard.getBoard()));
+      players = [];
       return
     }
     //check if board is full (implies a tie)
     if (round > 8) {
       turn = 2;
       displayController.displayPostgame("tie");
+      players = [];
       return
     }
     //swap whos turn it is
@@ -166,6 +170,7 @@ const displayController = (function () {
 
   const boardDisplay = document.querySelector('#gameboard');
   const spaces = document.querySelectorAll('.space');
+  const message = document.querySelector('#message');
   
   document.getElementById("game-options-form").addEventListener("submit", function(event) {
     event.preventDefault();
@@ -178,6 +183,7 @@ const displayController = (function () {
     game.addPlayer(player0Mark, player0UserControl);
     game.addPlayer(player1Mark, player1UserControl);
     game.startGame();
+    message.textContent = `Game is active! click on any open space to take your turn.`;
   });
 
   spaces.forEach((space) => {
@@ -188,6 +194,13 @@ const displayController = (function () {
       }
     })
   });
+
+  const clearBoard = () => {
+    spaces.forEach((space) => {
+      space.textContent = "";
+      space.classList.add("untaken");
+    })
+  }
 
   const addMark = (mark, yPos, xPos) => {
     let targetId = `#space-${yPos}-${xPos}`;
@@ -200,9 +213,13 @@ const displayController = (function () {
     spaces.forEach((space) => {
       space.classList.remove('untaken')
     });
-    console.log(mark);
+    if (mark === "tie") {
+      message.textContent = 'This game ends in a tie!';
+    } else {
+      message.textContent = `${mark} is the winner!`;
+    }
   }
 
-  return { addMark, displayPostgame }
+  return { addMark, displayPostgame, clearBoard }
 
 })();
